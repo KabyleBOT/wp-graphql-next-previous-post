@@ -30,7 +30,6 @@ class Loader
             9,
             0
         );
-
     }
 
     public function npp_action_register_types()
@@ -49,11 +48,16 @@ class Loader
                 // setup global $post variable
                 setup_postdata($post);
 
-                $next = get_next_post();
+                $next = get_previous_post();
 
                 wp_reset_postdata();
 
-                return DataSource::resolve_post_object($next->ID, $context);
+                if ($next->ID !== null) {
+                    return DataSource::resolve_post_object($next->ID, $context);
+                }
+                if ($next->ID === null) {
+                    return null;
+                }
             },
         ]);
 
@@ -72,11 +76,16 @@ class Loader
                 // setup global $post variable
                 setup_postdata($post);
 
-                $prev = get_previous_post();
+                $prev = get_next_post();
 
                 wp_reset_postdata();
 
-                return DataSource::resolve_post_object($prev->ID, $context);
+                if ($prev->ID !== null) {
+                    return DataSource::resolve_post_object($prev->ID, $context);
+                }
+                if ($prev->ID === null) {
+                    return null;
+                }
             },
         ]);
     }
